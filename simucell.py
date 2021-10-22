@@ -1,3 +1,5 @@
+from time import sleep
+
 CELL_STATE = {"NEWBORN": "X", "ALIVE": "O"}
 
 
@@ -8,7 +10,7 @@ class Cell:
 
     def __init__(self, lifespan: int) -> None:
         self.lifespan = lifespan
-        self.age = 0
+        self.age = 1
         self.state = CELL_STATE["NEWBORN"]
 
     def __str__(self) -> str:
@@ -59,6 +61,21 @@ class SimulCell:
             if slot > 0 and slot <= self.length * self.width:
                 self.board[slot] = Cell(self.cell_lifespan)
 
+    def cycle(self):
+        dead_cells = list()
+        for slot, cell in self.board.items():
+            cell.cycle()
+
+            if cell.death_check():
+                dead_cells.append(slot)
+
+        for slot in dead_cells:
+            del self.board[slot]
+
 
 simul = SimulCell(10, 10, 2, [1, 2, 3, 4, 5])
-simul.board_show()
+
+while True:
+    simul.board_show()
+    simul.cycle()
+    sleep(0.5)
