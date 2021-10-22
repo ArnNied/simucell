@@ -36,13 +36,14 @@ class SimulCell:
 
     def board_show(self) -> None:
         for i in range(self.length):
+            row = list()
             for j in range(self.width):
                 numerical_position = i * self.length + j + 1
                 if numerical_position in self.board:
-                    print(self.board[numerical_position], end=" ")
+                    row.append(self.board[numerical_position])
                 else:
-                    print("∙", end=" ")
-            print("")
+                    row.append("∙")
+            print("".join(row))
 
     def initial_slot_validate(self) -> None:
         for index, slot in enumerate(self.initial_slot):
