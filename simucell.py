@@ -10,10 +10,18 @@ class Cell:
         self.lifespan = lifespan
         self.age = 0
         self.state = CELL_STATE["NEWBORN"]
-        pass
 
     def __str__(self) -> str:
         return self.state
+
+    def death_check(self):
+        return self.age > self.lifespan
+
+    def cycle(self):
+        self.age += 1
+        if self.age == 2:
+            self.state = CELL_STATE["ALIVE"]
+        self.death_check()
 
 
 class SimulCell:
@@ -40,7 +48,7 @@ class SimulCell:
             for j in range(self.width):
                 numerical_position = i * self.length + j + 1
                 if numerical_position in self.board:
-                    row.append(self.board[numerical_position])
+                    row.append(self.board[numerical_position].state)
                 else:
                     row.append("∙")
             print("".join(row))
