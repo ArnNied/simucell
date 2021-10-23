@@ -150,5 +150,5 @@ while simul.cycle_counter != simul.max_cycle:
     system("cls")
     simul.board_show()
     simul.cycle()
-    print(f"Cycle: {simul.cycle_counter}")
+    print(f"Cycle: {simul.cycle_counter}/{simul.max_cycle}")
     sleep(0.3)
