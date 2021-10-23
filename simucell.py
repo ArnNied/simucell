@@ -32,6 +32,7 @@ class SimuCell:
     ) -> None:
         self.length = length
         self.width = width
+        self.board_full_size = length * width
 
         self.cell_lifespan = cell_lifespan
         self.initial_slot = initial_slot
@@ -58,8 +59,32 @@ class SimuCell:
     def initial_slot_validate(self) -> None:
         for index, slot in enumerate(self.initial_slot):
             slot = int(slot)
-            if slot > 0 and slot <= self.length * self.width:
+            if slot > 0 and slot <= self.board_full_size:
                 self.board[slot] = Cell(self.cell_lifespan)
+
+    def alive_adjacent_get(self):
+        alive_adjacent = set()
+        for slot in self.board.keys():
+            up = slot - self.width
+            down = slot + self.width
+            left = slot - 1
+            right = slot + 1
+
+            if up > 0:
+                alive_adjacent.add(up)
+            if down <= self.board_full_size:
+                alive_adjacent.add(down)
+            if left > 0 and slot % self.width - 1 > 0:
+                alive_adjacent.add(left)
+            if (
+                right <= self.board_full_size
+                and slot % self.width + 1 <= self.width
+            ):
+                alive_adjacent.add(right)
+
+        alive_adjacent = alive_adjacent ^ set(self.board.keys())
+
+        return alive_adjacent
 
     def cycle(self):
         dead_cells = list()
@@ -73,7 +98,7 @@ class SimuCell:
             del self.board[slot]
 
 
-simul = SimuCell(10, 10, 2, [1, 2, 3, 4, 5])
+simul = SimuCell(10, 10, 2, [1, 2, 3, 4, 5, 95, 96, 97, 98, 99, 100])
 
 while True:
     simul.board_show()
