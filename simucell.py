@@ -13,13 +13,14 @@ class Cell:
         self.age = 1
         self.state = CELL_STATE["NEWBORN"]
 
-    def __str__(self) -> str:
-        return self.state
-
     def death_check(self):
+        """Check if `self` should be dead or not"""
+
         return self.age > self.lifespan
 
     def cycle(self):
+        """Main method for a cycle"""
+
         self.age += 1
         if self.age == 2:
             self.state = CELL_STATE["ALIVE"]
@@ -54,6 +55,8 @@ class SimuCell:
         self.board_assemble()
 
     def cycle(self) -> None:
+        """Main method for a single cycle"""
+
         self.cycle_counter += 1
         self.board_show()
         self.annihilation_check()
@@ -71,10 +74,14 @@ class SimuCell:
         sleep(self.time_between)
 
     def board_assemble(self) -> None:
+        """Instantiate  and assign `Cell` to the board"""
+
         for i in self.initial_cell:
             self.board[i] = Cell(self.cell_lifespan)
 
     def board_show(self) -> None:
+        """Output the board to the console"""
+
         system("cls")
 
         for i in range(self.length):
@@ -91,6 +98,8 @@ class SimuCell:
         print(f"Cells alive: {len(self.board)}")
 
     def populate_adjacent(self) -> None:
+        """Populate the cells according to condition."""
+
         alive_adjacent = self.alive_adjacent_get()
         for slot in alive_adjacent:
             if slot not in self.board and rng(
@@ -99,6 +108,8 @@ class SimuCell:
                 self.board[slot] = Cell(self.cell_lifespan)
 
     def alive_adjacent_get(self) -> list:
+        """Returns the adjacent slot of currently alive cell(s)."""
+
         alive_adjacent = set()
         for slot in self.board.keys():
             up = slot - self.width
@@ -123,6 +134,8 @@ class SimuCell:
         return list(alive_adjacent)
 
     def adjacent_alive_count(self, slot: int) -> int:
+        """Returns how many adjacent is alive with `slot` as anchor."""
+
         alive_adjacent = 0
 
         up = slot - self.width
@@ -145,9 +158,13 @@ class SimuCell:
         return alive_adjacent
 
     def dead_cell_remove(self, dead_cells: list) -> None:
+        """Remove any dead cells from the board."""
+
         for slot in dead_cells:
             del self.board[slot]
 
-    def annihilation_check(self):
+    def annihilation_check(self) -> None:
+        """Raise `CellsAnnihilated` when there's no cell left on the board."""
+
         if len(self.board) == 0:
             raise CellsAnnihilated
