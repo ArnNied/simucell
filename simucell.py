@@ -26,7 +26,7 @@ class Cell:
         self.death_check()
 
 
-class SimulCell:
+class SimuCell:
     def __init__(
         self, length: int, width: int, cell_lifespan: int, initial_slot: list
     ) -> None:
@@ -73,7 +73,7 @@ class SimulCell:
             del self.board[slot]
 
 
-simul = SimulCell(10, 10, 2, [1, 2, 3, 4, 5])
+simul = SimuCell(10, 10, 2, [1, 2, 3, 4, 5])
 
 while True:
     simul.board_show()
