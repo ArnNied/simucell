@@ -1,0 +1,2 @@
+class CellsAnnihilated(BaseException):
+    pass
