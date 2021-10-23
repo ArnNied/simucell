@@ -15,7 +15,6 @@ if __name__ == "__main__":
     try:
         while simulation.cycle_counter != simulation.max_cycle:
             simulation.cycle()
-        # simulation.board_show()
     except CellsAnnihilated:
         print("No cells survived")
     except KeyboardInterrupt:
