@@ -1,3 +1,4 @@
+from os import system
 from time import sleep
 
 CELL_STATE = {"NEWBORN": "X", "ALIVE": "O"}
@@ -62,7 +63,7 @@ class SimuCell:
             if slot > 0 and slot <= self.board_full_size:
                 self.board[slot] = Cell(self.cell_lifespan)
 
-    def alive_adjacent_get(self):
+    def alive_adjacent_get(self) -> list:
         alive_adjacent = set()
         for slot in self.board.keys():
             up = slot - self.width
@@ -84,9 +85,19 @@ class SimuCell:
 
         alive_adjacent = alive_adjacent ^ set(self.board.keys())
 
-        return alive_adjacent
+        return list(alive_adjacent)
 
-    def cycle(self):
+    def populate_adjacent(self) -> None:
+        alive_adjacent = self.alive_adjacent_get()
+        for slot in alive_adjacent:
+            if slot not in self.board:
+                self.board[slot] = Cell(self.cell_lifespan)
+
+    def dead_cells_remove(self, dead_cells: list) -> None:
+        for slot in dead_cells:
+            del self.board[slot]
+
+    def cycle(self) -> None:
         dead_cells = list()
         for slot, cell in self.board.items():
             cell.cycle()
@@ -94,13 +105,14 @@ class SimuCell:
             if cell.death_check():
                 dead_cells.append(slot)
 
-        for slot in dead_cells:
-            del self.board[slot]
+        self.populate_adjacent()
+        self.dead_cells_remove(dead_cells)
 
 
-simul = SimuCell(10, 10, 2, [1, 2, 3, 4, 5, 95, 96, 97, 98, 99, 100])
+simul = SimuCell(11, 11, 2, [61])
 
 while True:
+    system("cls")
     simul.board_show()
     simul.cycle()
     sleep(0.5)
