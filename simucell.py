@@ -1,5 +1,4 @@
 from os import system
-from random import randint
 from time import sleep
 
 from exceptions import CellsAnnihilated
@@ -37,7 +36,7 @@ class SimuCell:
         length: int,
         width: int,
         cell_lifespan: int,
-        initial_slot: list,
+        initial_cell: list,
         max_cycle: int = -1,
     ) -> None:
         self.length = length
@@ -45,8 +44,8 @@ class SimuCell:
         self.board_full_size = length * width
 
         self.cell_lifespan = cell_lifespan
-        self.initial_slot = initial_slot
-        self.filled_slot = initial_slot
+        self.initial_cell = initial_cell
+        self.filled_slot = initial_cell
 
         self.cycle_counter = 0
         self.max_cycle = max_cycle
@@ -54,8 +53,9 @@ class SimuCell:
         self.board_assemble()
 
     def cycle(self) -> None:
-        system("cls")
         self.cycle_counter += 1
+        self.board_show()
+        self.annihilation_check()
 
         dead_cells = list()
         for slot, cell in self.board.items():
@@ -65,18 +65,18 @@ class SimuCell:
                 dead_cells.append(slot)
 
         self.populate_adjacent()
+
         self.dead_cells_remove(dead_cells)
 
-        self.board_show()
-
-        self.annihilation_check()
         sleep(0.3)
 
     def board_assemble(self) -> None:
-        for i in self.initial_slot:
+        for i in self.initial_cell:
             self.board[i] = Cell(self.cell_lifespan)
 
     def board_show(self) -> None:
+        system("cls")
+
         for i in range(self.length):
             row = list()
             for j in range(self.width):
@@ -87,12 +87,7 @@ class SimuCell:
                     row.append("∙")
             print("".join(row))
         print(f"Cycle: {self.cycle_counter}/{self.max_cycle}")
-
-    def initial_slot_validate(self) -> None:
-        for index, slot in enumerate(self.initial_slot):
-            slot = int(slot)
-            if slot > 0 and slot <= self.board_full_size:
-                self.board[slot] = Cell(self.cell_lifespan)
+        print(f"Cells alive: {len(self.board)}")
 
     def populate_adjacent(self) -> None:
         alive_adjacent = self.alive_adjacent_get()
@@ -155,9 +150,3 @@ class SimuCell:
     def annihilation_check(self):
         if len(self.board) == 0:
             raise CellsAnnihilated
-
-
-simul = SimuCell(20, 40, 2, [randint(1, 800) for _ in range(5)], 10)
-
-while simul.cycle_counter != simul.max_cycle:
-    simul.cycle()
