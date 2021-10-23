@@ -75,12 +75,9 @@ class SimuCell:
                 alive_adjacent.add(up)
             if down <= self.board_full_size:
                 alive_adjacent.add(down)
-            if left > 0 and slot % self.width - 1 > 0:
+            if left > 0 and slot % self.width != 1:
                 alive_adjacent.add(left)
-            if (
-                right <= self.board_full_size
-                and slot % self.width + 1 <= self.width
-            ):
+            if right <= self.board_full_size and slot % self.width != 0:
                 alive_adjacent.add(right)
 
         alive_adjacent = alive_adjacent ^ set(self.board.keys())
@@ -109,7 +106,7 @@ class SimuCell:
         self.dead_cells_remove(dead_cells)
 
 
-simul = SimuCell(11, 11, 2, [61])
+simul = SimuCell(5, 5, 2, [5, 10, 15, 20, 25])
 
 while True:
     system("cls")
