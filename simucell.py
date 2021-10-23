@@ -37,6 +37,7 @@ class SimuCell:
         width: int,
         cell_lifespan: int,
         initial_cell: list,
+        adjacent_coefficient: dict,
         max_cycle: int = -1,
         time_between: float = 0.3,
     ) -> None:
@@ -44,6 +45,7 @@ class SimuCell:
         self.width = width
         self.board_full_size = length * width
         self.time_between = time_between
+        self.adjacent_coefficient = adjacent_coefficient
 
         self.cell_lifespan = cell_lifespan
         self.initial_cell = initial_cell
@@ -95,7 +97,7 @@ class SimuCell:
         alive_adjacent = self.alive_adjacent_get()
         for slot in alive_adjacent:
             if slot not in self.board and rng(
-                self.adjacent_count_alive(slot) * 0.1
+                self.adjacent_coefficient[self.adjacent_count_alive(slot)]
             ):
                 self.board[slot] = Cell(self.cell_lifespan)
 

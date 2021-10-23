@@ -9,6 +9,7 @@ if __name__ == "__main__":
         length=cf.BOARD["LENGTH"],
         width=cf.BOARD["WIDTH"],
         cell_lifespan=cf.CELL_LIFESPAN,
+        adjacent_coefficient=cf.ADJACENT_COEFFICIENT,
         initial_cell=cf.INITIAL_CELL,
         max_cycle=cf.MAX_CYCLE,
     )

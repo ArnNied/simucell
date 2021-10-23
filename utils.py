@@ -24,7 +24,7 @@ def validate_config(cf) -> None:
         raise TypeError("Error: config.INITIAL_CELL must be a 'list'")
     if not all(type(i) is int for i in cf.INITIAL_CELL):
         raise ValueError(
-            "Error: Items inside config.INITIAL_CELL must be an 'int'"
+            "Error: Items of config.INITIAL_CELL must be an 'int'"
         )
     if (
         min(cf.INITIAL_CELL) < 1
@@ -38,6 +38,18 @@ def validate_config(cf) -> None:
         raise TypeError("Error: config.MAX_CYCLE must be an 'int'")
     if cf.MAX_CYCLE == 0 or cf.MAX_CYCLE < -1:
         raise ValueError("Error: config.MAX must be -1 or above 0")
+
+    if type(cf.ADJACENT_COEFFICIENT) is not dict:
+        raise TypeError("Error: config.ADJACENT_COEFFICIENT must be a 'dict'")
+    for key, value in cf.ADJACENT_COEFFICIENT.items():
+        if type(key) is not int:
+            raise ValueError(
+                "Error: config.ADJACENT_COEFFICIENT keys must be an 'int'"
+            )
+        if type(value) is not float and type(value) is not int:
+            raise ValueError(
+                "Error: config.ADJACENT_COEFFICIENT values must be a 'float' or 'int"
+            )
 
 
 def rng(data: float = None) -> float:
