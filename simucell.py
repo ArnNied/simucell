@@ -53,6 +53,25 @@ class SimuCell:
         self.board = dict()
         self.board_assemble()
 
+    def cycle(self) -> None:
+        system("cls")
+        self.cycle_counter += 1
+
+        dead_cells = list()
+        for slot, cell in self.board.items():
+            cell.cycle()
+
+            if cell.death_check():
+                dead_cells.append(slot)
+
+        self.populate_adjacent()
+        self.dead_cells_remove(dead_cells)
+
+        self.board_show()
+
+        self.annihilation_check()
+        sleep(0.3)
+
     def board_assemble(self) -> None:
         for i in self.initial_slot:
             self.board[i] = Cell(self.cell_lifespan)
@@ -73,6 +92,14 @@ class SimuCell:
         for index, slot in enumerate(self.initial_slot):
             slot = int(slot)
             if slot > 0 and slot <= self.board_full_size:
+                self.board[slot] = Cell(self.cell_lifespan)
+
+    def populate_adjacent(self) -> None:
+        alive_adjacent = self.alive_adjacent_get()
+        for slot in alive_adjacent:
+            if slot not in self.board and rng(
+                self.adjacent_count_alive(slot) * 0.1
+            ):
                 self.board[slot] = Cell(self.cell_lifespan)
 
     def alive_adjacent_get(self) -> list:
@@ -121,14 +148,6 @@ class SimuCell:
 
         return alive_adjacent
 
-    def populate_adjacent(self) -> None:
-        alive_adjacent = self.alive_adjacent_get()
-        for slot in alive_adjacent:
-            if slot not in self.board and rng(
-                self.adjacent_count_alive(slot) * 0.1
-            ):
-                self.board[slot] = Cell(self.cell_lifespan)
-
     def dead_cells_remove(self, dead_cells: list) -> None:
         for slot in dead_cells:
             del self.board[slot]
@@ -136,25 +155,6 @@ class SimuCell:
     def annihilation_check(self):
         if len(self.board) == 0:
             raise CellsAnnihilated
-
-    def cycle(self) -> None:
-        system("cls")
-        self.cycle_counter += 1
-
-        dead_cells = list()
-        for slot, cell in self.board.items():
-            cell.cycle()
-
-            if cell.death_check():
-                dead_cells.append(slot)
-
-        self.populate_adjacent()
-        self.dead_cells_remove(dead_cells)
-
-        self.board_show()
-
-        self.annihilation_check()
-        sleep(0.3)
 
 
 simul = SimuCell(20, 40, 2, [randint(1, 800) for _ in range(5)], 10)
