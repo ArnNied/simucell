@@ -32,7 +32,12 @@ class Cell:
 
 class SimuCell:
     def __init__(
-        self, length: int, width: int, cell_lifespan: int, initial_slot: list
+        self,
+        length: int,
+        width: int,
+        cell_lifespan: int,
+        initial_slot: list,
+        max_cycle: int = -1,
     ) -> None:
         self.length = length
         self.width = width
@@ -42,6 +47,8 @@ class SimuCell:
         self.initial_slot = initial_slot
         self.filled_slot = initial_slot
 
+        self.cycle_counter = 0
+        self.max_cycle = max_cycle
         self.board = dict()
         self.board_assemble()
 
@@ -134,12 +141,14 @@ class SimuCell:
 
         self.populate_adjacent()
         self.dead_cells_remove(dead_cells)
+        self.cycle_counter += 1
 
 
-simul = SimuCell(20, 40, 2, [randint(1, 800) for _ in range(5)])
+simul = SimuCell(20, 40, 100, [randint(1, 800) for _ in range(5)], 10)
 
-while True:
+while simul.cycle_counter != simul.max_cycle:
     system("cls")
     simul.board_show()
     simul.cycle()
-    sleep(0.5)
+    print(f"Cycle: {simul.cycle_counter}")
+    sleep(0.3)
