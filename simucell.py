@@ -38,10 +38,12 @@ class SimuCell:
         cell_lifespan: int,
         initial_cell: list,
         max_cycle: int = -1,
+        time_between: float = 0.3,
     ) -> None:
         self.length = length
         self.width = width
         self.board_full_size = length * width
+        self.time_between = time_between
 
         self.cell_lifespan = cell_lifespan
         self.initial_cell = initial_cell
@@ -68,7 +70,7 @@ class SimuCell:
 
         self.dead_cells_remove(dead_cells)
 
-        sleep(0.3)
+        sleep(self.time_between)
 
     def board_assemble(self) -> None:
         for i in self.initial_cell:
