@@ -1,5 +1,8 @@
 from os import system
+from random import randint
 from time import sleep
+
+from utils import rng
 
 CELL_STATE = {"NEWBORN": "X", "ALIVE": "O"}
 
@@ -73,10 +76,13 @@ class SimuCell:
 
             if up > 0:
                 alive_adjacent.add(up)
+
             if down <= self.board_full_size:
                 alive_adjacent.add(down)
+
             if left > 0 and slot % self.width != 1:
                 alive_adjacent.add(left)
+
             if right <= self.board_full_size and slot % self.width != 0:
                 alive_adjacent.add(right)
 
@@ -84,10 +90,34 @@ class SimuCell:
 
         return list(alive_adjacent)
 
+    def adjacent_count_alive(self, slot: int) -> int:
+        alive_adjacent = 0
+
+        up = slot - self.width
+        down = slot + self.width
+        left = slot - 1
+        right = slot + 1
+
+        if up in self.board:
+            alive_adjacent += 1
+
+        if down in self.board:
+            alive_adjacent += 1
+
+        if left in self.board:
+            alive_adjacent += 1
+
+        if right in self.board:
+            alive_adjacent += 1
+
+        return alive_adjacent
+
     def populate_adjacent(self) -> None:
         alive_adjacent = self.alive_adjacent_get()
         for slot in alive_adjacent:
-            if slot not in self.board:
+            if slot not in self.board and rng(
+                self.adjacent_count_alive(slot) * 0.2
+            ):
                 self.board[slot] = Cell(self.cell_lifespan)
 
     def dead_cells_remove(self, dead_cells: list) -> None:
@@ -106,7 +136,7 @@ class SimuCell:
         self.dead_cells_remove(dead_cells)
 
 
-simul = SimuCell(5, 5, 2, [5, 10, 15, 20, 25])
+simul = SimuCell(20, 40, 2, [randint(1, 800) for _ in range(5)])
 
 while True:
     system("cls")
