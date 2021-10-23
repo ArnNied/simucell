@@ -50,7 +50,7 @@ class SimuCell:
         for i in range(self.length):
             row = list()
             for j in range(self.width):
-                numerical_position = i * self.length + j + 1
+                numerical_position = i * self.width + j + 1
                 if numerical_position in self.board:
                     row.append(self.board[numerical_position].state)
                 else:
