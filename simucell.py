@@ -8,10 +8,6 @@ CELL_STATE = {"NEWBORN": "X", "ALIVE": "O"}
 
 
 class Cell:
-    state = "X"
-    age = 0
-    lifespan = 0
-
     def __init__(self, lifespan: int) -> None:
         self.lifespan = lifespan
         self.age = 1
@@ -44,15 +40,16 @@ class SimuCell:
         self.length = length
         self.width = width
         self.board_full_size = length * width
+
         self.time_between = time_between
         self.adjacent_coefficient = adjacent_coefficient
 
         self.cell_lifespan = cell_lifespan
         self.initial_cell = initial_cell
-        self.filled_slot = initial_cell
 
         self.cycle_counter = 0
         self.max_cycle = max_cycle
+
         self.board = dict()
         self.board_assemble()
 
@@ -69,8 +66,7 @@ class SimuCell:
                 dead_cells.append(slot)
 
         self.populate_adjacent()
-
-        self.dead_cells_remove(dead_cells)
+        self.dead_cell_remove(dead_cells)
 
         sleep(self.time_between)
 
@@ -90,6 +86,7 @@ class SimuCell:
                 else:
                     row.append("∙")
             print("".join(row))
+
         print(f"Cycle: {self.cycle_counter}/{self.max_cycle}")
         print(f"Cells alive: {len(self.board)}")
 
@@ -97,7 +94,7 @@ class SimuCell:
         alive_adjacent = self.alive_adjacent_get()
         for slot in alive_adjacent:
             if slot not in self.board and rng(
-                self.adjacent_coefficient[self.adjacent_count_alive(slot)]
+                self.adjacent_coefficient[self.adjacent_alive_count(slot)]
             ):
                 self.board[slot] = Cell(self.cell_lifespan)
 
@@ -125,7 +122,7 @@ class SimuCell:
 
         return list(alive_adjacent)
 
-    def adjacent_count_alive(self, slot: int) -> int:
+    def adjacent_alive_count(self, slot: int) -> int:
         alive_adjacent = 0
 
         up = slot - self.width
@@ -147,7 +144,7 @@ class SimuCell:
 
         return alive_adjacent
 
-    def dead_cells_remove(self, dead_cells: list) -> None:
+    def dead_cell_remove(self, dead_cells: list) -> None:
         for slot in dead_cells:
             del self.board[slot]
 
