@@ -2,6 +2,7 @@ from os import system
 from random import randint
 from time import sleep
 
+from exceptions import CellsAnnihilated
 from utils import rng
 
 CELL_STATE = {"NEWBORN": "X", "ALIVE": "O"}
@@ -66,6 +67,7 @@ class SimuCell:
                 else:
                     row.append("∙")
             print("".join(row))
+        print(f"Cycle: {self.cycle_counter}/{self.max_cycle}")
 
     def initial_slot_validate(self) -> None:
         for index, slot in enumerate(self.initial_slot):
@@ -123,7 +125,7 @@ class SimuCell:
         alive_adjacent = self.alive_adjacent_get()
         for slot in alive_adjacent:
             if slot not in self.board and rng(
-                self.adjacent_count_alive(slot) * 0.2
+                self.adjacent_count_alive(slot) * 0.1
             ):
                 self.board[slot] = Cell(self.cell_lifespan)
 
@@ -131,7 +133,14 @@ class SimuCell:
         for slot in dead_cells:
             del self.board[slot]
 
+    def annihilation_check(self):
+        if len(self.board) == 0:
+            raise CellsAnnihilated
+
     def cycle(self) -> None:
+        system("cls")
+        self.cycle_counter += 1
+
         dead_cells = list()
         for slot, cell in self.board.items():
             cell.cycle()
@@ -141,14 +150,14 @@ class SimuCell:
 
         self.populate_adjacent()
         self.dead_cells_remove(dead_cells)
-        self.cycle_counter += 1
+
+        self.board_show()
+
+        self.annihilation_check()
+        sleep(0.3)
 
 
-simul = SimuCell(20, 40, 100, [randint(1, 800) for _ in range(5)], 10)
+simul = SimuCell(20, 40, 2, [randint(1, 800) for _ in range(5)], 10)
 
 while simul.cycle_counter != simul.max_cycle:
-    system("cls")
-    simul.board_show()
     simul.cycle()
-    print(f"Cycle: {simul.cycle_counter}/{simul.max_cycle}")
-    sleep(0.3)
